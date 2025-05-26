@@ -3,7 +3,7 @@ databases:
   - name: omnisol_demo_single_survey_data
     databaseName: omnisol_demo_single_survey_data
     user: admin
-    plan: free
+    plan: basic-256mb
     region: frankfurt
     ipAllowList:
       - source: 0.0.0.0/0
