@@ -1,0 +1,1 @@
+This is a blueprint from a single solution clone

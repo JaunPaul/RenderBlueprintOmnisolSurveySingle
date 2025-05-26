@@ -1,0 +1,74 @@
+# Exported from Render on 2025-05-26T01:09:07Z
+databases:
+  - name: omnisol_demo_single_survey_data
+    databaseName: omnisol_demo_single_survey_data
+    user: admin
+    plan: free
+    region: frankfurt
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: omnisol-webhook-demo-single
+    runtime: image
+    image:
+      url: docker.io/jaunpaul/omnisol-webhook-demo-single:latest
+    plan: starter
+    envVars:
+      - key: TWILIO_PHONE
+        sync: false
+      - key: TWILIO_TOKEN
+        sync: false
+      - key: TWILIO_SID
+        sync: false
+      - key: COMMON_SURVEY_BASE_URL
+        sync: false
+      - key: COMMON_N8N_MAILERHOOK
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: omnisol_demo_single_survey_data
+          property: connectionString
+      - key: API_SECRET
+        sync: false
+      - key: COMMON_RATE_LIMIT_MAX_REQUESTS
+        sync: false
+      - key: COMMON_RATE_LIMIT_WINDOW_MS
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: HOST
+        sync: false
+      - key: PORT
+        sync: false
+      - key: NODE_ENV
+        sync: false
+    region: frankfurt
+    domains:
+      - demo.api.theedge.works
+    autoDeployTrigger: commit
+
+  - type: web
+    name: omnisol-surveys-frontend-demo-single
+    runtime: node
+    buildCommand: pnpm run build
+    startCommand: pnpm run start
+    plan: starter
+    region: frankfurt
+    domains:
+      - demo.survey.theedge.works
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: omnisol_demo_single_survey_data
+          property: connectionString
+      - key: PRIVATE_N8N_NOTIFICATION_WEBHOOK
+        value: https://n8n-kn-digital-b6b8cc160b77.herokuapp.com/webhook/survey-notifications
+      - key: NODE_ENV
+        value: production
+    autoDeployTrigger: commit
+
+version: "1"
